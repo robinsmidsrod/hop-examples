@@ -1,0 +1,664 @@
+
+
+###
+### promote_if_curried
+###
+
+## Chapter 7 section 1
+
+sub promote_if {
+  my $is_interesting = shift;          
+  return sub {
+    my $element = shift;
+    if ($is_interesting->($element->{_tag}) {
+      return ['keeper', join '', map {$_->[1]} @_];
+    } else {
+      return @_;
+    }
+  }
+}
+
+
+## Chapter 7 section 1
+
+my @tagged_texts = walk_html($tree, 
+                             sub { ['maybe', $_[0]] }, 
+                             promote_if('h1'),
+                             });
+        sub add2 {
+my ($s, $t) = @_;
+return unless $s && $t;
+node(head($s) + head($t),
+             promise { add2(tail($s), tail($t)) });
+        }
+
+        sub mul2 {
+my ($s, $t) = @_;
+return unless $s && $t;
+node(head($s) * head($t),
+             promise { mul2(tail($s), tail($t)) });
+        }
+        sub combine2 {
+my ($s, $t, $op) = @_;
+return unless $s && $t;
+node($op->(head($s), head($t)),
+     promise { combine2(tail($s), tail($t), $op) });
+
+        }
+        sub add2 { combine2(@_, sub { $_[0] + $_[1] }) }
+        sub mul2 { combine2(@_, sub { $_[0] * $_[1] }) }
+sub combine2 {
+  my $op = shift;
+  return sub {
+    my ($s, $t) = @_;
+    return unless $s && $t;
+    node($op->(head($s), head($t)),
+         promise { combine2($op)->(tail($s), tail($t)) });
+  };        
+}
+        $add2 = combine2(sub { $_[0] + $_[1] });
+        $mul2 = combine2(sub { $_[0] * $_[1] });
+        my $catstrs = combine2(sub { "$_[0]$_[1]" })->($s, $t);
+        sub scale {
+my $s = shift;
+return sub {
+  my $c = shift;
+  return if $c == 0;
+  transform { $_[0] * $c } $s;
+}
+        }
+sub scale {
+  my $c = shift;
+  return sub {
+    my $s = shift;
+    transform { $_[0] * $c } $s;
+  }
+}
+        *double = scale(2);
+        $s2 = double($s);
+        sub slope {
+my ($f, $x) = @_;
+my $e = 0.00000095367431640625;
+($f->($x+$e) - $f->($x-$e)) / (2*$e);
+        }
+sub slope {
+  my $f = shift;
+  my $e = 0.00000095367431640625;
+  return sub {
+    my $x = shift;
+    ($f->($x+$e) - $f->($x-$e)) / (2*$e);
+  };
+}
+sub slope {
+  my $f = shift;
+  my $e = 0.00000095367431640625;
+  my $d = sub {
+    my ($x) = shift;
+    ($f->($x+$e) - $f->($x-$e)) / (2*$e);
+  };
+  return @_ ? $d->(shift) : $d;
+}
+        sub iterate_function {
+my ($f, $x) = @_;
+my $s;         
+$s = node($x, promise { &transform($f, $s) });
+        }
+sub iterate_function {
+  my $f = shift;
+  return sub { 
+    my $x = shift;
+    my $s;         
+    $s = node($x, promise { &transform($f, $s) });
+  };
+}
+        *upfrom = iterate_function(sub { $_[0] + 1 });
+        *pow2_from = iterate_function(sub { $_[0] * 2 });
+        sub combine2 {
+my $op = shift;
+return sub {
+  my ($s, $t) = @_;
+  return unless $s && $t;
+  node($op->(head($s), head($t)),
+       promise { combine2($op)->(tail($s), tail($t)) });
+};        
+        }
+sub combine2 {
+  my $op = shift;
+  my $r;
+  $r = sub {
+    my ($s, $t) = @_;
+    return unless $s && $t;
+    node($op->(head($s), head($t)),
+         promise { $r->(tail($s), tail($t)) });
+  };        
+}
+        map { $_ * 2 } (1..5);           # returns 2, 4, 6, 8, 10
+        grep { $_ % 2 == 0 } (1..10);    # returns 2, 4, 6, 8, 10
+sub cmap (&) {
+  my $f = shift;
+  my $r = sub {
+    my @result;
+    for (@_) {
+      push @result, $f->($_);
+    }
+    @result;
+  };
+  return $r;
+}
+sub cgrep (&) {
+  my $f = shift;
+  my $r = sub {
+    my @result;
+    for (@_) {
+      push @result, $_ if $f->($_);
+    }
+    @result;
+  };
+  return $r;
+}
+        $double = cmap { $_ * 2 };
+        $find_slashdot = cgrep { $_->{referer} =~ /slashdot/i };
+        sub cmap (&;@) {
+my $f = shift;
+my $r = sub {
+  my @result;
+  for (@_) {
+    push @result, $f->($_);
+  }
+  @result;
+};
+return @_ ? $r->(@_) : $r;
+        }
+        @doubles = cmap { $_ * 2 } (1..5);
+        @evens = cgrep { $_ % 2 == 0 } (1..10);
+        @doubles = cmap { $_ * 2 } @some_array;
+        sub some_curried_function {
+my $first_arg = shift;
+my $r = sub { 
+  ...
+};
+return @_ ? $r->(@_) : $r;
+        }
+package Curry;
+use base 'Exporter';
+@EXPORT = ('curry');
+@EXPORT_OK = qw(curry_listfunc curry_n);
+
+sub curry_listfunc {
+  my $f = shift;
+  return sub { 
+    my $first_arg = shift;
+    return sub { $f->($first_arg, @_) };
+  };
+}
+
+sub curry {
+  my $f = shift;
+  return sub { 
+    my $first_arg = shift;
+    my $r = sub { $f->($first_arg, @_) };
+    return @_ ? $r->(@_) : $r;
+  };
+}
+
+1;
+        sub imap (&$) {
+my ($transform, $it) = @_;
+return sub {
+  my $next = NEXTVAL($it);
+  return unless defined $next;
+  return $transform->($next);
+}
+        }
+        my $doubles_iterator = imap { $_[0] * 2 } $it;
+        my $doubles_a = imap { $_[0] * 2 } $it_a;
+        my $doubles_b = imap { $_[0] * 2 } $it_b;
+        my $doubles_c = imap { $_[0] * 2 } $it_c;
+        my $doubles_a = double $it_a;
+        my $doubles_b = double $it_b;
+        my $doubles_c = double $it_c;
+        my ($doubles_a, $doubles_b, $doubles_c) 
+= map double($_), $it_a, $it_b, $it_c;
+        *double = imap { $_[0] * 2 };
+        *double = curry(\&imap)->(sub { $_[0] * 2 });
+        *c_imap = curry(\&imap);
+        *double = c_imap(sub { $_[0] * 2 });
+        sub curry {
+my $f = shift;
+return sub (&;@) { 
+  my $first_arg = shift;
+  my $r = sub { $f->($first_arg, @_) };
+  return @_ ? $r->(@_) : $r;
+};
+        }
+        BEGIN { *c_imap = curry(\&imap); }
+        *double = c_imap { $_[0] * 2 };
+        $doubles_a = c_imap { $_[0] * 2 } $it_a;
+        sub scale {
+my ($s, $c) = @_;
+$s->transform(sub { $_[0]*$c });
+        }
+        sub { 
+  my $s = shift;
+  my $r = sub { scale($s, @_) };
+  return @_ ? $r->(@_) : $r;
+        }
+        BEGIN { *c_scale = curry(\&scale) }
+        my $double = c_scale(2);
+        my $doubled_it = c_scale(2, $it);
+        Type of arg 1 to main::c_scale must be block or sub {} (not
+        constant item)...
+        *c_scale = curry(\&scale);
+        my $double = c_scale(2);
+        my $doubled_it = c_scale(2, $it);
+        *c_scale = curry(\&scale);
+        my $double = eval 'c_scale(2)';
+        # Doesn't really work
+        sub curry {
+my $f = shift;
+my $PROTOTYPE = shift;
+return sub ($PROTOTYPE) { 
+  my $first_arg = shift;
+  my $r = sub { $f->($first_arg, @_) };
+  return @_ ? $r->(@_) : $r;
+};
+        }
+# Doesn't work before 5.8.1
+use Scalar::Util 'set_prototype';
+
+sub curry {
+  my $f = shift;
+  my $PROTOTYPE = shift;
+  set_prototype(sub { 
+    my $first_arg = shift;
+    my $r = sub { $f->($first_arg, @_) };
+    return @_ ? $r->(@_) : $r;
+  }, $PROTOTYPE);
+}
+sub curry {
+  my $f = shift;
+  my $PROTOTYPE = shift;
+  $PROTOTYPE = "($PROTOTYPE)" if defined $PROTOTYPE;
+  my $CODE = q{sub PROTOTYPE { 
+                 my $first_arg = shift;
+                 my $r = sub { $f->($first_arg, @_) };
+                 return @_ ? $r->(@_) : $r;
+               }};
+  $CODE =~ s/PROTOTYPE/$PROTOTYPE/;
+  eval $CODE;
+}
+sub curry_n {
+  my $N = shift;
+  my $f = shift;
+  my $c;
+  $c = sub {
+    if (@_ >= $N) { $f->(@_) }
+    else {
+      my @a = @_;
+      curry_n($N-@a, sub { $f->(@a, @_) });
+    }
+  };
+}
+        *add = curry_n(2, sub { $_[0] + $_[1] });
+        add(2, 3);      # Returns 5
+        *increment = add(1);
+        increment(8);   # return 9
+        *csubstr = curry_n(3, sub { defined $_[3] ?
+                             substr($_[0], $_[1], $_[2], $_[3]) :
+                             substr($_[0], $_[1], $_[2]) });
+        # Just like regular substr
+
+        $ss = csubstr($target, $start, $length);
+        csubstr($target, $start, $length, $replacement);
+
+        # Not just like regular substr
+
+        $target = "I like pie";
+
+        # This '$part' function gets two arguments: a start position
+        # and a length; it returns the apporpriate part of $target.
+
+        $part = csubstr($target);
+        my $ss = $part->($start, $length);  
+
+        # This function gets an argument N and returns that many characters
+        # from the beginning of $target.
+
+        $first_N_chars = csubstr($target, 0);
+        my $prefix_3 = $first_N_chars->(3);     # "I l"
+        my $prefix_7 = $first_N_chars->(7);     # "I like "
+ sub dir_walk {
+  unshift @_, undef if @_ < 3;
+  my ($top, $filefunc, $dirfunc) = @_;
+
+  my $r;
+  $r = sub {
+    my $DIR;
+    my $top = shift;
+    if (-d $top) {
+      my $file;
+      unless (opendir $DIR, $top) {
+        warn "Couldn't open directory $code: $!; skipping.\n";
+        return;
+      }
+
+      my @results;
+      while ($file = readdir $DIR) {
+        next if $file eq '.' || $file eq '..';
+        push @results, $r->("$top/$file");
+      }
+      return $dirfunc->($top, @results);
+    } else {
+      return $filefunc->($top);
+    }
+  };
+  defined($top) ? $r->($top) : $r;
+}
+        sub max { my $max = shift;
+        for (@_) { $max = $_ > $max ? $_ : $max }
+        return $max;
+      }
+
+        sub min { my $min = shift;
+        for (@_) { $min = $_ < $min ? $_ : $min }
+        return $min;
+      }
+
+        sub maxstr { my $max = shift;
+           for (@_) { $max = $_ gt $max ? $_ : $max }
+           return $max;
+         }
+
+        sub minstr { my $min = shift;
+           for (@_) { $min = $_ lt $min ? $_ : $min }
+           return $min;
+         }
+
+        sub sum { my $sum = shift;
+        for (@_) { $sum = $sum + $_ }
+        return $sum;
+      }
+        sub reduce { my $code = shift;
+           my $val = shift;
+           for (@_) { $val = $code->($val, $_) }
+           return $val;
+         }
+        reduce(sub { $_[0] + $_[1] }, @VALUES) == sum(@VALUES)
+        reduce(sub { $_[0] > $_[1] ? $_[0] : $_[1] }, @VALUES) == max(@VALUES)
+        reduce(sub { $a + $b }, @VALUES)
+        reduce(sub { $a > $b ? $a : $b }, @VALUES)
+        sub reduce (&@) { 
+my $code = shift;
+my $val = shift;
+for (@_) { 
+  local ($a, $b) = ($val, $_); 
+  $val = $code->($val, $_) 
+}
+return $val;
+        }
+        BEGIN {
+*reduce = curry(\&List::Util::reduce);
+*sum = reduce { $a + $b };
+*max = reduce { $a > $b ? $a : $b };
+        }
+        reduce { $a + 1 };
+        sub reduce (&$@) { 
+my $code = shift;
+my $val = shift;
+for (@_) { 
+  local ($a, $b) = ($val, $_); 
+  $val = $code->($val, $_) 
+}
+return $val;
+        }
+sub reduce (&;$@) { 
+  my $code = shift;
+  my $f = sub {
+    my $base_val = shift;
+    my $g = sub {
+      my $val = $base_val;
+      for (@_) { 
+        local ($a, $b) = ($val, $_); 
+        $val = $code->($val, $_);
+      }
+      return $val;
+    };
+    @_ ? $g->(@_) : $g;
+  };
+  @_ ? $f->(@_) : $f;
+}
+        *listlength = reduce { $a + 1 } 0;
+        *product = reduce { $a * $b } 1;
+        *length_and_product = reduce { [$a->[0]+1, $a->[1]*$b] } [0, 1];
+        sub fold {
+my $f = shift;
+my $fold;       
+$fold = sub {
+  my $x = shift;
+  sub {
+    return $x unless @_;
+    my $first = shift;
+    $fold->($f->($x, $first), @_)
+  }
+}
+        }
+sub fold {
+  my $f = shift;
+  sub {
+    my $x = shift;
+    sub {
+      my $r = $x;
+      while (@_) {
+        $r = $f->($r, shift());
+      }
+      return $r;
+    }
+  }
+}
+sub interleave {
+  my ($a, $b) = @_;
+  return sub {
+    my $next = $a->();
+    unless (defined $next) {
+      $a = $b;
+      $next = $a->();
+     }
+    ($a, $b) = ($b, $a);
+    $next;
+  }
+}
+package Iterator_Logic;
+use base 'Exporter';
+@EXPORT = qw(i_or_ i_or i_and_ i_and i_without_ i_without);
+
+sub i_or_ {
+  my ($cmp, $a, $b) = @_;
+  my ($av, $bv) = ($a->(), $b->());
+  return sub {
+    if (! defined $av && ! defined $bv) { return }
+    elsif (! defined $av) { $rv = $bv; $bv = $b->() }
+    elsif (! defined $bv) { $rv = $av; $av = $a->() }
+    else {
+      my $d = $cmp->($av, $bv);
+      if    ($d < 0) { $rv = $av; $av = $a->() }
+      elsif ($d > 0) { $rv = $bv; $bv = $b->() }
+      else           { $rv = $av; $av = $a->(); $bv = $b->() }
+    }
+    return $rv;
+  }
+}
+
+use Curry;
+BEGIN { *i_or = curry(\&i_or_) }
+        BEGIN { *numeric_or = i_or { $_[0] <=> $_[1] };
+      *alphabetic_or = i_or { $_[0] cmp $_[1] };
+         }
+
+        $event_times =  numeric_or($access_request_times,
+              numeric_or($report_request_times,
+                         $server_start_times));
+sub i_and_ {
+  my ($cmp, $a, $b) = @_;
+  my ($av, $bv) = ($a->(), $b->());
+  return sub {
+    my $d;
+    until (! defined $av || ! defined $bv || 
+           ($d = $cmp->($av, $bv)) == 0) {
+      if ($d < 0) { $av = $a->() }
+      else        { $bv = $b->() }
+    }
+    return unless defined $av && defined $bv;
+    my $rv = $av;
+    ($av, $bv) = ($a->(), $b->());
+    return $rv;
+  }
+}
+
+BEGIN { *i_and = curry \&i_and_ }
+        my $dbh = FlatDB->new($datafile);
+        $dbh->query($filename, $value);
+        $dbh->callbackquery(sub { ... });
+        $dbh->select("STATE = 'NY' | 
+            OWES > 100 & STATE = 'MA'");
+package FlatDB_Composable;
+use base 'FlatDB';
+use base 'Exporter';
+@EXPORT_OK = qw(query_or query_and query_not query_without);
+use Iterator_Logic;
+
+# usage: $dbh->query(fieldname, value)
+# returns all records for which (fieldname) matches (value)
+sub query {
+  my $self = shift;
+  my ($field, $value) = @_;
+  my $fieldnum = $self->{FIELDNUM}{uc $field};
+  return unless defined $fieldnum;
+  my $fh = $self->{FH};
+  seek $fh, 0, 0;
+  <$fh>;                # discard header line
+  my $position = tell $fh;
+  my $recno = 0;
+
+  return sub {
+    local $_;
+    seek $fh, $position, 0;
+    while (<$fh>) {
+      chomp;
+      $recno++;
+      $position = tell $fh;         
+      my @fields = split $self->{FIELDSEP};
+      my $fieldval = $fields[$fieldnum];
+      return [$recno, @fields] if $fieldval eq $value;
+    }
+    return;
+  };
+}
+BEGIN { *query_or  =  i_or(sub { $_[0][0] <=> $_[1][0] });
+        *query_and = i_and(sub { $_[0][0] <=> $_[1][0] });
+      }
+BEGIN { *query_without = i_without(sub { $_[0][0] <=> $_[1][0] }); }
+
+sub callbackquery {
+  my $self = shift;
+  my $is_interesting = shift;
+  my $fh = $self->{FH};
+  seek $fh, 0, SEEK_SET;
+  <$fh>;                # discard header line
+  my $position = tell $fh;
+  my $recno = 0;
+
+  return sub {
+    local $_;
+    seek $fh, $position, SEEK_SET;
+    while (<$fh>) {
+      $position = tell $fh;         
+      chomp;
+      $recno++;
+      my %F;
+      my @fieldnames = @{$self->{FIELDS}};
+      my @fields = split $self->{FIELDSEP};
+      for (0 .. $#fieldnames) {
+        $F{$fieldnames[$_]} = $fields[$_];
+      }
+      return [$recno, @fields] if $is_interesting->(%F);
+    }
+    return;
+  };
+}
+
+1;
+        "STATE = 'NY' | OWES > 100 & STATE = 'MA'"
+        query_or($dbh->query('STATE', 'NY'),
+       query_and($dbh->callbackquery(sub { $F{OWES} > 100 }),
+                 $dbh->query('STATE', 'MA')
+                ))
+# $a but not $b
+sub i_without_ {
+  my ($cmp, $a, $b) = @_;
+  my ($av, $bv) = ($a->(), $b->());
+  return sub {
+    while (defined $av) {
+      my $d;
+      while (defined $bv && ($d = $cmp->($av, $bv)) > 0) {
+        $bv = $b->();
+      }
+      if ( ! defined $bv || $d < 0 ) {
+        my $rv = $av; $av = $a->(); return $rv;
+      } else {
+        $bv = $b->();
+        $av = $a->();
+      }
+    }
+    return;
+  }
+}
+
+BEGIN {
+  *i_without = curry \&i_without_;
+  *query_without = 
+    i_without(sub { my ($a,$b) = @_; $a->[0] <=> $b->[0] });
+}
+
+1;
+sub query_not {
+  my $self = shift;
+  my $q = shift;
+  query_without($self->all, $q);
+}
+sub all {
+  $_[0]->callbackquery(sub { 1 });
+}
+
+1;
+package FlatDB_Overloaded;
+BEGIN {
+  for my $f (qw(and or without)) {
+    *{"query_$f"} = \&{"FlatDB_Composable::query_$f"};
+  }
+}
+use base 'FlatDB_Composable';
+
+sub query {
+  $self = shift;
+  my $q = $self->SUPER::query(@_);
+  bless $q => __PACKAGE__;
+}
+
+sub callbackquery {
+  $self = shift;
+  my $q = $self->SUPER::callbackquery(@_);
+  bless $q => __PACKAGE__;
+}
+
+1;
+use overload '|' => \&query_or,
+             '&' => \&query_and,
+             '-' => \&query_without,
+             'fallback' => 1;
+        my ($ny, $debtor, $ma) = 
+      ($dbh->query('STATE', 'NY'),
+       $dbh->callbackquery(sub { $F{OWES} > 100 }),
+       $dbh->query('STATE', 'MA')
+      );
+        my $interesting = query_or($ny, query_and($debtor, $ma))
+        my $interesting = $ny | $debtor & $ma;

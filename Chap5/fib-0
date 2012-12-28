@@ -1,0 +1,13 @@
+
+
+###
+### fib0
+###
+
+## Chapter 5 section 4.3.1
+
+sub fib {
+  my $n = shift;
+  if ($n < 2) { return $n }
+  fib($n-2) + fib($n-1);
+}

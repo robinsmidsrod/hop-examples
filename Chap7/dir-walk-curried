@@ -1,0 +1,35 @@
+
+
+###
+### dir_walk_curried
+###
+
+## Chapter 7 section 2.4
+
+ sub dir_walk {
+  unshift @_, undef if @_ < 3;
+  my ($top, $filefunc, $dirfunc) = @_;
+
+  my $r;
+  $r = sub {
+    my $DIR;
+    my $top = shift;
+    if (-d $top) {
+      my $file;
+      unless (opendir $DIR, $top) {
+        warn "Couldn't open directory $code: $!; skipping.\n";
+        return;
+      }
+
+      my @results;
+      while ($file = readdir $DIR) {
+        next if $file eq '.' || $file eq '..';
+        push @results, $r->("$top/$file");
+      }
+      return $dirfunc->($top, @results);
+    } else {
+      return $filefunc->($top);
+    }
+  };
+  defined($top) ? $r->($top) : $r;
+}

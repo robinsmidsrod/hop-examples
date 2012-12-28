@@ -1,0 +1,20 @@
+
+
+###
+### make-dfs-search-simple
+###
+
+## Chapter 5 section 3
+
+use Iterator_Utils 'Iterator';
+
+sub make_dfs_search {
+  my ($root, $children) = @_;
+  my @agenda = $root;
+  return Iterator {
+    return unless @agenda;
+    my $node = pop @agenda;
+    push @agenda, $children->($node);
+    return $node;
+  };
+}       

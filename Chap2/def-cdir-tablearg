@@ -1,0 +1,26 @@
+
+
+###
+### define_config_directive_tablearg
+###
+
+## Chapter 2 section 1.2
+
+sub define_config_directive {
+  my ($rest, $dispatch_table) = @_;
+  $rest =~ s/^\s+//;
+  my ($new_directive, $def_txt) = split /\s+/, $rest, 2;
+
+  if (exists $dispatch_table->{$new_directive}) {
+    warn "$new_directive already defined; skipping.\n";
+    return;
+  }
+
+  my $def = eval "sub { $def_txt }";
+  if (not defined $def) {
+    warn "Could not compile definition for `$new_directive': $@; skipping.\n";
+    return;       
+  }
+
+  $dispatch_table->{$new_directive} = $def;
+}

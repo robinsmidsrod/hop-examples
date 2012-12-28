@@ -1,0 +1,20 @@
+
+
+###
+### fib2
+###
+
+## Chapter 5 section 4.3.1
+
+sub fib {
+  my $n = shift;
+  while (1) {
+    if ($n < 2) {
+      return $n;
+    } else {
+      my $s1 = fib($n-2);
+      my $s2 = fib($n-1);
+      return $s1 + $s2;
+    }
+  }
+}

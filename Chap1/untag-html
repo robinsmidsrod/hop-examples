@@ -1,0 +1,19 @@
+
+
+###
+### untag_html
+###
+
+## Chapter 1 section 7
+
+sub untag_html {
+  my ($html) = @_;
+  return $html unless ref $html;   # It's a plain string
+
+  my $text = '';
+  for my $item (@{$html->{_content}}) {
+    $text .= untag_html($item);
+  }
+    
+  return $text;
+}

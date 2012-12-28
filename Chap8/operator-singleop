@@ -1,0 +1,28 @@
+
+
+###
+### operator-singleop
+###
+
+## Chapter 8 section 4.4
+
+sub operator {
+  my ($subpart, $op, $opfunc) = @_;
+
+  # Build and return parser like the one above
+  T(concatenate($subpart, star(T(concatenate($op,
+                                             $subpart),
+                                 sub {
+                                   my $subpart_value = $_[1];
+                                   sub { $opfunc->($_[0], $subpart_value };
+                                 }),
+                               )),
+     sub { my ($total, $funcs) = @_;
+           for my $f (@$funcs) {
+             $total = $f->($total);
+           }
+           $total;
+         }
+    );
+
+} 

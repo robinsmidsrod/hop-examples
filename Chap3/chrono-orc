@@ -1,0 +1,15 @@
+
+
+###
+### chronologically-orcish
+###
+
+## Chapter 3 section 10
+
+{ my %cache;
+  sub chronologically {
+    ($cache{$a} ||= date_to_string($a))
+       cmp
+    ($cache{$b} ||= date_to_string($b))
+  }
+}

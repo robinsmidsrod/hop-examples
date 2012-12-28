@@ -1,0 +1,37 @@
+
+
+###
+### powerset_recurse4
+###
+
+## Chapter 5 section 4.1.1
+
+sub powerset_recurse ($) {
+    my ( $set ) = @_;
+    my $null = { };
+    my $powerset  = { $null, $null };
+
+    while (my ($key, $value) = each %$set) {
+
+      my @newitems;
+
+      while (my ($powerkey, $powervalue) = each %$powerset) {
+          my %subset = ( );
+
+          # Copy the old set to the subset.
+          @subset{keys   %{ $powerset->{$powerkey} } } =
+                  values %{ $powerset->{$powervalue} };
+
+          # Add the new member to the subset.
+          $subset{$key} = $value;
+
+          # Prepare to add the new subset to the powerset.
+          push @newitems, \%subset;
+      }
+
+      $powerset->{ $_ } = $_ for @newitems;
+
+    }
+
+    return $powerset;
+}

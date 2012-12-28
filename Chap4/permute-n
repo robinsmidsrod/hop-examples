@@ -1,0 +1,27 @@
+
+
+###
+### permute-n
+###
+
+## Chapter 4 section 3.1
+
+sub n_to_pat {
+  my @odometer;
+  my ($n, $length) = @_;
+  for my $i (1 .. $length) {
+    unshift @odometer, $n % $i;
+    $n = int($n/$i);
+  }
+  return $n ? () : @odometer;
+}
+sub permute {
+  my @items = @_;
+  my $n = 0;
+  return Iterator {
+    my @pattern = n_to_pat($n, scalar(@items));
+    my @result = pattern_to_permutation(\@pattern, \@items);
+    $n++;
+    return @result;
+  };
+}

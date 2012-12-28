@@ -1,0 +1,20 @@
+
+
+###
+### curry.set_prototype
+###
+
+## Chapter 7 section 2.2.1
+
+# Doesn't work before 5.8.1
+use Scalar::Util 'set_prototype';
+
+sub curry {
+  my $f = shift;
+  my $PROTOTYPE = shift;
+  set_prototype(sub { 
+    my $first_arg = shift;
+    my $r = sub { $f->($first_arg, @_) };
+    return @_ ? $r->(@_) : $r;
+  }, $PROTOTYPE);
+}

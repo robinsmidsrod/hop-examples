@@ -1,0 +1,34 @@
+
+
+###
+### fib12
+###
+
+## Chapter 5 section 4.3.1
+
+sub fib {
+  my $n = shift;
+  my ($s1, $return);
+  my $BRANCH = 0;
+  my @STACK;
+  while (1) {
+    if ($n < 2) {
+      $return = $n;
+    } else {
+      if ($BRANCH == 0) {
+        push (@STACK, [ 1, 0, $n ]), $n -= 1 while $n >= 2;
+        $return = $n;
+      } elsif ($BRANCH == 1) {
+        push @STACK, [ 2, $return, $n ];
+        $n -= 2;
+        $BRANCH = 0;
+        next;
+      } elsif ($BRANCH == 2) {
+        $return += $s1;
+      }
+    }
+
+    return $return unless @STACK;
+    ($BRANCH, $s1, $n) = @{pop @STACK};
+  }
+}

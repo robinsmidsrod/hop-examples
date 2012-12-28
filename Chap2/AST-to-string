@@ -1,0 +1,19 @@
+
+
+###
+### AST_to_string
+###
+
+## Chapter 2 section 2
+
+sub AST_to_string {
+  my ($tree) = @_;
+  if (ref $tree) {
+    my ($op, $a1, $a2) = @$tree;
+    my ($s1, $s2) = (AST_to_string($a1),
+                     AST_to_string($a2));
+    "($s1 $op $s2)";
+  } else {
+    $tree;
+  }
+}

@@ -1,0 +1,27 @@
+
+
+###
+### memoize-normalize4
+###
+
+## Chapter 3 section 7
+
+sub memoize {
+  my ($func, $keygen) = @_;
+  my $keyfunc;
+  if ($keygen eq '') {
+    $keygen = q{join ',', @_} 
+  } elsif (UNIVERSAL::isa($keygen, 'CODE')) {
+    $keyfunc = $keygen;
+    $keygen = q{$keyfunc->(@_)};
+  }
+  my %cache;
+  my $newcode = q{ 
+    sub { my $key = do { KEYGEN };
+          $cache{$key} = $func->(@_) unless exists $cache{$key};
+          return $cache{$key};
+        }
+  };
+  $newcode =~ s/KEYGEN/$keygen/g;
+  return eval $newcode;
+}

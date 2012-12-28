@@ -1,0 +1,18 @@
+
+
+###
+### memoize
+###
+
+## Chapter 3 section 5
+
+sub memoize {
+  my ($func) = @_;
+  my %cache;
+  my $stub = sub {
+    my $key = join ',', @_;
+    $cache{$key} = $func->(@_) unless exists $cache{$key};
+    return $cache{$key};
+  };
+  return $stub;
+}

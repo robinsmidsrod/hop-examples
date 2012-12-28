@@ -1,0 +1,36 @@
+
+
+###
+### lookfor-continuation
+###
+
+## Chapter 8 section 8.1
+
+sub lookfor {
+  my $wanted = shift;
+  my $value = shift || sub { $_[0] };
+  my $u = shift;
+  $wanted = [$wanted] unless ref $wanted;
+
+  my $parser = parser {
+    my ($input, $continuation) = @_;
+    return unless defined $input;
+
+    my $next = head($input);
+    for my $i (0 .. $#$wanted) {
+      next unless defined $wanted->[$i];
+      return unless $wanted->[$i] eq $next->[$i];
+    }
+    my $wanted_value = $value->($next, $u);
+
+    # Try continuation
+    if (my ($v) = $continuation->(tail($input))) {
+      return $wanted_value;
+    } else {
+      return;
+    }
+  };
+
+  $N{$parser} = "[@$wanted]";
+  return $parser;
+}

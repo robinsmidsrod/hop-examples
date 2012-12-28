@@ -1,0 +1,15 @@
+
+
+###
+### scale
+###
+
+## Chapter 7 section 1
+
+sub scale {
+  my $c = shift;
+  return sub {
+    my $s = shift;
+    transform { $_[0] * $c } $s;
+  }
+}

@@ -1,0 +1,72 @@
+
+
+###
+### outline-parser
+###
+
+## Chapter 8 section 6
+
+use Lexer ':all';
+use Stream 'node';
+
+my ($tree, $subtree);
+sub outline_to_array {
+  my @input = @_;
+  my $input = sub { shift @input };
+  
+  my $lexer = iterator_to_stream(
+          make_lexer($input,
+                     ['ITEM',        qr/^.*$/m               ],
+                     ['NEWLINE',     qr/\n+/    , sub { "" } ],
+                    )
+          );
+
+  my ($result) = $tree->($lexer);
+  return $result;
+}
+
+
+## Chapter 8 section 6
+
+use Parser ':all';
+use Stream 'head';
+my $Tree    = parser { $tree->(@_) };
+my $Subtree = parser { $subtree->(@_) };
+
+my $LEVEL = 0;
+$tree = concatenate(lookfor('ITEM', sub { trim($_[0][1]) }),
+                    action(sub { $LEVEL++ }),
+                    star($Subtree),
+                    action(sub { $LEVEL-- }));
+
+my $BULLET = '[#*ox.+-]\s+';
+sub trim {
+  my $s = shift;
+  $s =~ s/^ *//;
+  $s =~ s/^$BULLET//o;
+  return $s;
+}
+
+
+## Chapter 8 section 6
+
+$tree = T(concatenate(lookfor('ITEM', sub { trim($_[0][1]) }),
+                      action(sub { $LEVEL++; return 1; }),
+                      star($Subtree),
+                      action(sub { $LEVEL--; return 1; })),
+          sub { [ $_[0], @{$_[2]} ] });
+$subtree = T(concatenate(test(sub {
+                                my $input = shift;
+                                return unless $input;
+                                my $next = head($input);
+                                return unless $next->[0] eq 'ITEM';
+                                return level_of($next->[1]) >= $LEVEL;
+                              }),
+                         $Tree,
+                        ),
+             sub { $_[1] });
+
+sub level_of {
+  my ($space) = $_[0] =~ /^( *)/;
+  return length($space)/2;
+}

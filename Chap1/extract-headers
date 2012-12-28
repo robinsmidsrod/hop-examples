@@ -1,0 +1,28 @@
+
+
+###
+### extract_headers
+###
+
+## Chapter 1 section 7
+
+@tagged_texts = walk_html($tree, sub { ['MAYBE', $_[0]] }, 
+                                 \&promote_if_h1tag);
+
+sub promote_if_h1tag {
+  my $element = shift;
+  if ($element->{_tag} eq 'h1') {
+    return ['KEEPER', join '', map {$_->[1]} @_];
+  } else {
+    return @_;
+  }
+}
+sub extract_headers {
+  my $tree = shift;
+  my @tagged_texts = walk_html($tree, sub { ['MAYBE', $_[0]] }, 
+                                      \&promote_if_h1tag);
+  my @keepers = grep { $_->[0] eq 'KEEPER' } @tagged_texts;
+  my @keeper_text = map { $_->[1] } @keepers;
+  my $header_text = join '', @keeper_text;
+  return $header_text;
+}

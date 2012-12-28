@@ -1,0 +1,29 @@
+
+
+###
+### make-value-search
+###
+
+## Chapter 5 section 3
+
+sub make_dfs_value_search {
+  my ($root, $children, $is_interesting, $evaluate) = @_;
+  $evaluate = memoize($evaluate);
+  my @agenda = $root;
+  return Iterator {
+    while (@agenda) {
+      my $best_node_so_far = 0;
+      my $best_node_value = $evaluate->($agenda[0]);
+      for (0 .. $#agenda) {
+        my $val = $evaluate->($agenda[$_]);
+        next unless $val > $best_node_value;
+        $best_node_value = $val;
+        $best_node_so_far = $_;
+      }
+      my $node = splice @agenda, $best_node_so_far, 1;
+      push @agenda, $children->($node);
+      return $node if !$is_interesting || $is_interesting->($node);
+    }
+    return;
+  };
+}       

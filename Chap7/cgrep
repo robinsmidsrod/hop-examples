@@ -1,0 +1,19 @@
+
+
+###
+### cgrep
+###
+
+## Chapter 7 section 2
+
+sub cgrep (&) {
+  my $f = shift;
+  my $r = sub {
+    my @result;
+    for (@_) {
+      push @result, $_ if $f->($_);
+    }
+    @result;
+  };
+  return $r;
+}

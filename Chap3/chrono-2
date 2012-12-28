@@ -1,0 +1,28 @@
+
+
+###
+### chronologically-2
+###
+
+## Chapter 3 section 10
+
+@sorted_dates = sort chronologically @dates;
+
+%m2n = 
+   ( jan =>  1, feb =>  2, mar =>  3,
+     apr =>  4, may =>  5, jun =>  6, 
+     jul =>  7, aug =>  8, sep =>  9, 
+     oct => 10, nov => 11, dec => 12, );
+
+sub chronologically {
+  my ($am, $ad, $ay) = split_date($a);
+  my ($bm, $bd, $by) = split_date($b);
+
+             $ay  <=>         $by  
+  || $m2n{lc $am} <=> $m2n{lc $bm} 
+  ||         $ad  <=>         $bd;
+}
+
+sub split_date {
+  $_[0] =~ /(\w{3}) (\d+), (\d+)/;
+}

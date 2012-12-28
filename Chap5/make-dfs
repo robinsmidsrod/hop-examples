@@ -1,0 +1,24 @@
+
+
+###
+### make-dfs-search
+###
+
+## Chapter 5 section 3
+
+use Iterator_Utils 'Iterator';
+
+sub make_dfs_search {
+  my ($root, $children, $is_interesting) = @_;
+  my @agenda = $root;
+  return Iterator {
+    while (@agenda) {
+      my $node = pop @agenda;
+      push @agenda, $children->($node);
+      return $node if !$is_interesting || $is_interesting->($node);
+    }
+    return;
+  };
+}       
+
+1;

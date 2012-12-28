@@ -1,0 +1,16 @@
+
+
+###
+### delivery-charge
+###
+
+## Chapter 3 section 7.5
+
+sub delivery_charge {
+  my ($quantity_ordered) = @_;
+  my ($hour, $day_of_week) = (localtime)[2,6];
+  # perform complex computatation involving $weight, $gross_cost,
+  #     $hour, $day_of_week, and $quantity_ordered
+  # ...
+  return $delivery_charge;
+}

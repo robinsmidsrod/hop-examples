@@ -1,0 +1,7 @@
+LASTNAME:FIRSTNAME:CITY:STATE:OWES
+Adler:David:New York:NY:157.00
+Ashton:Elaine:Boston:MA:0.00
+Dominus:Mark:Philadelphia:PA:0.00
+Orwant:Jon:Cambridge:MA:26.30
+Schwern:Michael:New York:NY:149658.23
+Wall:Larry:Mountain View:CA:-372.14

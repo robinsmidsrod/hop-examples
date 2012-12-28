@@ -1,0 +1,13 @@
+
+
+###
+### factorial0
+###
+
+## Chapter 5 section 4.2
+
+sub factorial {
+  my ($n) = @_;
+  return 1 if $n == 0;
+  return factorial($n-1) * $n;
+}

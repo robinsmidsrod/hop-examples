@@ -1,0 +1,11 @@
+
+
+###
+### show-example-1
+###
+
+## Chapter 6 section 2.2
+
+use Stream 'upfrom', 'show';
+
+show(upfrom(7), 10);

@@ -1,0 +1,20 @@
+
+
+###
+### RGB_to_CMYK_caching
+###
+
+## Chapter 3 section 
+
+my %cache;        
+
+sub RGB_to_CMYK {
+  my ($r, $g, $b) = @_;
+  my $key = join ',', $r, $g, $b;
+  return $cache{$key} if exists $cache{$key}; 
+  my ($c, $m, $y) = (255-$r, 255-$g, 255-$b);
+  my $k = $c < $m ? ($c < $y ? $c : $y)
+                  : ($m < $y ? $m : $y);  # Minimum
+  for ($c, $m, $y) { $_ -= $k }
+  return $cache{$key} = [$c, $m, $y, $k];  
+}

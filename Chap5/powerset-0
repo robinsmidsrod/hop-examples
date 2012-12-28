@@ -1,0 +1,47 @@
+
+
+###
+### powerset_recurse0
+###
+
+## Chapter 5 section 4.1.1
+
+sub powerset_recurse ($;@) {
+    my ( $set, $powerset, $keys, $values, $n, $i ) = @_;
+
+    if ( @_ == 1 ) { # Initialize.
+        my $null   = { };
+        $powerset  = { $null, $null };
+        $keys      = [ keys   %{ $set } ];
+        $values    = [ values %{ $set } ];
+        $nmembers  = keys %{ $set };    # This many rounds.
+        $i         = 0;                 # The current round.
+    }
+
+    # Ready?
+    return $powerset if $i == $nmembers;
+
+    # Remap.
+
+    my @powerkeys   = keys   %{ $powerset };
+    my @powervalues = values %{ $powerset };
+    my $powern      = @powerkeys;
+    my $j;
+
+    for ( $j = 0; $j < $powern; $j++ ) {
+        my %subset = ( );
+
+        # Copy the old set to the subset.
+        @subset{keys   %{ $powerset->{ $powerkeys  [ $j ] } }} =
+                values %{ $powerset->{ $powervalues[ $j ] } };
+
+        # Add the new member to the subset.
+        $subset{$keys->[ $i ]} = $values->[ $i ];
+
+        # Add the new subset to the powerset.
+        $powerset->{ \%subset } = \%subset;
+    }
+
+    # Recurse.
+    powerset_recurse( $set, $powerset, $keys, $values, $nmembers, $i+1 );
+}

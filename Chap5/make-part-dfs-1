@@ -1,0 +1,19 @@
+
+
+###
+### make_partition_dfs
+###
+
+## Chapter 5 section 3
+
+sub make_partition {
+  my $n = shift;
+  my $root = [$n];
+  my $children = sub {
+    my ($largest, @rest) = @{shift()};
+    my $min = $rest[0] || 1;
+    my $max  = int($largest/2);
+    map [$largest-$_, $_, @rest], ($min .. $max);
+  };
+  make_dfs_search($root, $children);
+}

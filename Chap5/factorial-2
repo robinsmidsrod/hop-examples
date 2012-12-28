@@ -1,0 +1,17 @@
+
+
+###
+### factorial2
+###
+
+## Chapter 5 section 4.2
+
+sub factorial {
+  my ($n) = @_;
+  my $product = 1;
+  until ($n == 0) {
+    $product *= $n;
+    $n--;
+  }
+  return $product;
+}

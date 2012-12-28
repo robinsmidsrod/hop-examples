@@ -1,0 +1,31 @@
+
+
+###
+### partition-iterator-clumsy
+###
+
+## Chapter 5 section 2
+
+sub make_partition {
+  my $n = shift;
+  my @agenda = ([$n,            # $largest
+                 [],            # \@rest
+                 1,             # $min
+                 int($n/2),     # $max
+                ]);
+  return Iterator {
+    while (@agenda) {
+      my $item = pop @agenda;
+      my ($largest, $rest, $min, $max) = @$item;
+      for ($min .. $max) {
+        push @agenda, [$largest - $_,          # $largest
+                       [$_, @$rest],           # \@rest
+                       $_,                     # $min
+                       int(($largest - $_)/2), # $max
+                      ];
+      }
+      return [$largest, @$rest];
+    }
+    return;
+  };
+}

@@ -1,0 +1,16 @@
+
+
+###
+### memoize_method
+###
+
+## Chapter 3 section 8.1
+
+sub memoize_method {
+  my ($method, $key) = @_;
+  return sub {
+    my $self = shift;
+    return $self->{$key} if exists $self->{$key};
+    return $self->{$key} = $method->($self, @_);
+  };
+}

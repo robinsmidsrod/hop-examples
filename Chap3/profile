@@ -1,0 +1,30 @@
+
+
+###
+### profile
+###
+
+## Chapter 3 section 12.2
+
+use Time::HiRes 'time';
+my (%time, %calls);
+
+sub profile {
+  my ($func, $name) = @_;
+  my $stub = sub {
+    my $start = time;
+    my $return = $func->(@_);
+    my $end = time;
+    my $elapsed = $end - $start;
+    $calls{$name} += 1;
+    $time{$name}  += $elapsed;
+    return $return;
+  };
+  return $stub;
+}
+END {
+  printf STDERR "%-12s %9s %6s\n", "Function", "# calls", "Elapsed";
+  for my $name (sort {$time{$b} <=> $time{$a}} (keys %time)) {
+    printf "%-12s %9d %6.2f\n", $name, $calls{$name}, $time{$name};
+  }
+}

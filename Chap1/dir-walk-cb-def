@@ -1,0 +1,29 @@
+
+
+###
+### dir_walk_callbacks_defaults
+###
+
+## Chapter 1 section 5
+
+sub dir_walk {
+  my ($top, $filefunc, $dirfunc) = @_;
+  my $DIR;
+
+  if (-d $top) {
+    my $file;
+    unless (opendir $DIR, $top) {
+      warn "Couldn't open directory top: $!; skipping.\n";
+      return;
+    }
+
+    my @results;
+    while ($file = readdir $DIR) {
+      next if $file eq '.' || $file eq '..';
+      push @results, dir_walk("$top/$file", $filefunc, $dirfunc);
+    }
+    return $dirfunc ? $dirfunc->($top, @results) : () ;
+  } else {
+    return $filefunc ? $filefunc->($top): () ;
+  }
+}

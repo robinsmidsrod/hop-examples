@@ -1,0 +1,16 @@
+
+
+###
+### iterate_function
+###
+
+## Chapter 7 section 1
+
+sub iterate_function {
+  my $f = shift;
+  return sub { 
+    my $x = shift;
+    my $s;         
+    $s = node($x, promise { &transform($f, $s) });
+  };
+}

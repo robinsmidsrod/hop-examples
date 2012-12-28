@@ -1,0 +1,28 @@
+
+
+###
+### fib4
+###
+
+## Chapter 5 section 4.3.1
+
+sub fib {
+  my $n = shift;
+  my ($s1, $s2, $return);
+  my $BRANCH = 0;
+  while (1) {
+    if ($n < 2) {
+      return $n;
+    } else {
+      if ($BRANCH == 0) {
+        $return = fib($n-2);
+      } elsif ($BRANCH == 1) {
+        $s1 = $return;
+        $return = fib($n-1);
+      } elsif ($BRANCH == 2) {
+        $s2 = $return;
+        $return = $s1 + $s2;
+      }
+    }
+  }
+}

@@ -1,0 +1,14 @@
+
+
+###
+### factorial1
+###
+
+## Chapter 5 section 4.2
+
+sub factorial {
+  my ($n, $product) = @_;
+  $product = 1 unless defined $product;
+  return $product if $n == 0;
+  return factorial($n-1, $n * $product);
+}

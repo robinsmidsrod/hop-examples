@@ -1,0 +1,27 @@
+
+
+###
+### dir-walk-sizehash
+###
+
+## Chapter 1 section 5
+
+sub file {
+  my $file = shift;
+  [short($file), -s $file];
+}
+
+sub short {
+  my $path = shift;
+  $path =~ s{.*/}{};
+  $path;
+}
+sub dir {
+  my ($dir, @subdirs) = @_;
+  my %new_hash;
+  for (@subdirs) {      
+    my ($subdir_name, $subdir_structure) = @$_;
+    $new_hash{$subdir_name} = $subdir_structure;
+  }
+  return [short($dir), \%new_hash];
+}

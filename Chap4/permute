@@ -1,0 +1,46 @@
+
+
+###
+### permute
+###
+
+## Chapter 4 section 3.1
+
+sub permute {
+  my @items = @_;
+  my @pattern = (0) x @items;
+  return Iterator {
+    return unless @pattern;
+    my @result = pattern_to_permutation(\@pattern, \@items);
+    @pattern = increment_pattern(@pattern);
+    return @result;
+  };
+}
+sub pattern_to_permutation {
+  my $pattern = shift;
+  my @items = @{shift()};
+  my @r;
+  for (@$pattern) {
+    push @r, splice(@items, $_, 1);
+  }
+  @r;
+}
+
+
+## Chapter 4 section 3.1
+
+sub increment_pattern {
+  my @odometer = @_;
+  my $wheel = $#odometer;    # start at rightmost wheel
+
+  until ($odometer[$wheel] < $#odometer-$wheel  ||  $wheel < 0) {
+    $odometer[$wheel] = 0;  
+    $wheel--;  # next wheel to the left
+  }
+  if ($wheel < 0) {
+    return;   # fell off the left end; no more sequences
+  } else {
+    $odometer[$wheel]++;  # this wheel now turns one notch
+    return @odometer;
+  }
+}

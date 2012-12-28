@@ -1,0 +1,17 @@
+
+
+###
+### partition
+###
+
+## Chapter 5 section 2
+
+sub partition {
+  print "@_\n";
+  my ($largest, @rest) = @_;
+  my $min = $rest[0] || 1;
+  my $max  = int($largest/2);
+  for ($min .. $max) {
+    partition($largest-$_, $_, @rest);
+  }
+}

@@ -1,0 +1,24 @@
+
+
+###
+### make_partition_dfs_search
+###
+
+## Chapter 5 section 3
+
+require 'make-dfs-search';
+
+sub make_partition {
+  my $n = shift;
+  my $root = [$n, 1, []];
+  my $children = sub {
+    my ($n, $min, $parts) = @{shift()};
+    map [$n-$_, $_, [@$parts, $_]], ($min .. $n);
+  };
+  my $is_complete = sub {
+    my ($n) = @{shift()};
+    $n == 0;
+  };
+   imap { $_->[2] }
+    make_dfs_search($root, $children, $is_complete);
+}

@@ -1,0 +1,24 @@
+
+
+###
+### tokens-calc
+###
+
+## Chapter 8 section 1.2
+
+sub tokens {
+  my $target = shift;
+  return sub {
+    TOKEN: {       
+      return ['INTEGER', $1]    if $target =~ /\G (\d+)         /gcx;
+      return ['PRINT']          if $target =~ /\G print \b      /gcx;
+      return ['IDENTIFIER', $1] if $target =~ /\G ([A-Za-z_]\w*)/gcx;
+      return ['OPERATOR', $1]   if $target =~ /\G (\*\*)        /gcx;
+      return ['OPERATOR', $1]   if $target =~ /\G ([-+*\/=()])  /gcx;
+      return ['TERMINATOR', $1] if $target =~ /\G (; \n* | \n+) /gcx;
+      redo TOKEN                if $target =~ /\G \s+           /gcx;
+      return ['UNKNOWN', $1]    if $target =~ /\G (.)           /gcx;
+      return;
+    }
+  };
+}

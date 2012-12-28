@@ -1,0 +1,39 @@
+
+
+###
+### powerset_recurse3
+###
+
+## Chapter 5 section 4.1.1
+
+sub powerset_recurse ($) {
+    my ( $set ) = @_;
+    my $null = { };
+    my $powerset  = { $null, $null };
+
+    while (my ($key, $value) = each %$set) {
+
+      # Remap.
+
+      my @powerkeys   = keys   %{ $powerset };
+      my @powervalues = values %{ $powerset };
+      my $powern      = @powerkeys;
+      my $j;
+
+      for ( $j = 0; $j < $powern; $j++ ) {
+          my %subset = ( );
+
+          # Copy the old set to the subset.
+          @subset{keys   %{ $powerset->{ $powerkeys  [ $j ] } }} =
+                  values %{ $powerset->{ $powervalues[ $j ] } };
+
+          # Add the new member to the subset.
+          $subset{$key} = $value;
+
+          # Add the new subset to the powerset.
+          $powerset->{ \%subset } = \%subset;
+      }
+    }
+
+    return $powerset;
+}

@@ -1,0 +1,24 @@
+
+
+###
+### reduce
+###
+
+## Chapter 7 section 3
+
+sub reduce (&;$@) { 
+  my $code = shift;
+  my $f = sub {
+    my $base_val = shift;
+    my $g = sub {
+      my $val = $base_val;
+      for (@_) { 
+        local ($a, $b) = ($val, $_); 
+        $val = $code->($val, $_);
+      }
+      return $val;
+    };
+    @_ ? $g->(@_) : $g;
+  };
+  @_ ? $f->(@_) : $f;
+}

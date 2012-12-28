@@ -1,0 +1,19 @@
+
+
+###
+### cmap
+###
+
+## Chapter 7 section 2
+
+sub cmap (&) {
+  my $f = shift;
+  my $r = sub {
+    my @result;
+    for (@_) {
+      push @result, $f->($_);
+    }
+    @result;
+  };
+  return $r;
+}

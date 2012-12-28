@@ -1,0 +1,26 @@
+
+
+###
+### alternate-continuation
+###
+
+## Chapter 8 section 8.1
+
+sub alternate {
+  my @p = @_;
+  return parser { return () } if @p == 0;
+  return $p[0]                if @p == 1;
+
+  my $p;
+  $p = parser {
+    my ($input, $continuation) = @_;
+    for (@p) {
+      if (my ($v) = $_->($input, $continuation)) {
+        return $v;
+      }
+    }
+    return;  # Failure
+  };
+  $N{$p} = "(" . join(" | ", map $N{$_}, @p) . ")";
+  return $p;
+}

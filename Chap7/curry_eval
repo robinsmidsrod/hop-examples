@@ -1,0 +1,20 @@
+
+
+###
+### curry.eval
+###
+
+## Chapter 7 section 2.2.1
+
+sub curry {
+  my $f = shift;
+  my $PROTOTYPE = shift;
+  $PROTOTYPE = "($PROTOTYPE)" if defined $PROTOTYPE;
+  my $CODE = q{sub PROTOTYPE { 
+                 my $first_arg = shift;
+                 my $r = sub { $f->($first_arg, @_) };
+                 return @_ ? $r->(@_) : $r;
+               }};
+  $CODE =~ s/PROTOTYPE/$PROTOTYPE/;
+  eval $CODE;
+}

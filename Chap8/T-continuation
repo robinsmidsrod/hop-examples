@@ -1,0 +1,22 @@
+
+
+###
+### T-continuation
+###
+
+## Chapter 8 section 8.1
+
+sub T {
+  my ($parser, $transform) = @_;
+  my $p = sub {
+    my ($input, $continuation) = @_;
+    if (my $v = $parser->($input, $continuation)) {
+      $v = $transform->(@$v);
+      return $v;
+    } else {
+      return;
+    }
+  };
+  $N{$p} = $N{$parser};
+  return $p;
+}

@@ -1,0 +1,46 @@
+
+
+###
+### outline-parser-2
+###
+
+## Chapter 8 section 6
+
+my @LEVEL;
+$tree = T(concatenate(T(lookfor('ITEM', sub { $_[0] }),
+                        sub {
+                          my $s = $_[1];
+                          push @LEVEL, level_of($s);
+                          return trim($s);
+                        }),
+                      star($Subtree),
+                      action(sub { pop @LEVEL })),
+          sub { [ $_[0], @{$_[1]} ]},
+         );
+
+
+## Chapter 8 section 6
+
+$subtree = T(concatenate(test(sub {
+                                my $input = shift;
+                                return unless $input;
+                                my $next = head($input);
+                                return unless $next->[0] eq 'ITEM';
+                                return level_of($next->[1]) > $LEVEL[-1];
+                              }),
+                         $Tree,),
+             sub { $_[1] });
+   my $PREFIX;
+   sub level_of {
+     my $count = 0;
+     my $s = shift;
+     if (! defined $PREFIX) {
+       ($PREFIX) = $s =~ /^(\s*)/;
+     }
+     $s =~ s/^$PREFIX//o 
+       or die "Item '$s' wasn't indented the same as the previous items.\n";
+
+     my ($indent) = $s =~ /^(\s*)/;
+     my $level = length($indent);
+     return $level;
+   }

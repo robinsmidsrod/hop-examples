@@ -1,0 +1,17 @@
+
+
+###
+### slope
+###
+
+## Chapter 7 section 1
+
+sub slope {
+  my $f = shift;
+  my $e = 0.00000095367431640625;
+  my $d = sub {
+    my ($x) = shift;
+    ($f->($x+$e) - $f->($x-$e)) / (2*$e);
+  };
+  return @_ ? $d->(shift) : $d;
+}

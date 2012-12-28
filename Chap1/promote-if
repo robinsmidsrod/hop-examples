@@ -1,0 +1,27 @@
+
+
+###
+### promote_if
+###
+
+## Chapter 1 section 7.1
+
+sub promote_if {
+  my $is_interesting = shift;          
+  my $element = shift;
+  if ($is_interesting->($element->{_tag}) {
+    return ['keeper', join '', map {$_->[1]} @_];
+  } else {
+    return @_;
+  }
+}
+
+
+## Chapter 1 section 7.1
+
+my @tagged_texts = walk_html($tree, 
+                             sub { ['maybe', $_[0]] }, 
+                             sub { promote_if(
+                                     sub { $_[0] eq 'h1' },
+                                     $_[0])
+                             });

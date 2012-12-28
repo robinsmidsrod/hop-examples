@@ -1,0 +1,28 @@
+
+
+###
+### concatenate2-continuation
+###
+
+## Chapter 8 section 8.1
+
+sub concatenate2 {
+  my ($A, $B) = @_;
+  my $p;
+  $p = parser {
+    my ($input, $continuation) = @_;
+    my ($aval, $bval);
+    my $BC = parser {
+      my ($newinput) = @_;
+      return unless ($bval) = $B->($newinput, $continuation);
+    };
+    $N{$BC} = "$N{$B} $N{$continuation}";
+    if (($aval) = $A->($input, $BC)) {
+      return ([$aval, $bval]);
+    } else {
+      return;
+    }
+  };
+  $N{$p} = "$N{$A} $N{$B}";
+  return $p;
+}

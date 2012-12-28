@@ -1,0 +1,18 @@
+
+
+###
+### walk_html
+###
+
+## Chapter 1 section 7
+
+sub walk_html {
+  my ($html, $textfunc, $elementfunc) = @_;
+  return $textfunc->($html) unless ref $html;   # It's a plain string
+
+  my @results;
+  for my $item (@{$html->{_content}}) {
+    push @results, walk_html($item, $textfunc, $elementfunc);
+  }
+  return $elementfunc->($html, @results);
+}

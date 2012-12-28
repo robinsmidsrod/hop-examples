@@ -1,0 +1,18 @@
+
+
+###
+### closure-example
+###
+
+## Chapter 3 section 5.2
+
+sub make_counter {
+  my $n = shift;
+  return sub { print "n is ", $n++ };
+}
+
+my $x = make_counter(7);
+my $y = make_counter(20);
+$x->();  $x->();  $x->();
+$y->();  $y->();  $y->();
+$x->();

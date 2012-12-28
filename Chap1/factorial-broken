@@ -1,0 +1,13 @@
+
+
+###
+### factorial_nonreentrant
+###
+
+## Chapter 1 section 2.1
+
+sub factorial {
+  ($n) = @_;
+  return 1 if $n == 0;
+  return factorial($n-1) * $n;
+}

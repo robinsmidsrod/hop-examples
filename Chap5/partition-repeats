@@ -1,0 +1,15 @@
+
+
+###
+### partition-repeats
+###
+
+## Chapter 5 section 2
+
+sub partition {
+  print "@_\n";
+  my ($n, @parts) = @_;
+  for (1 .. $n-1) {
+    partition($n-$_, $_, @parts);
+  }
+}

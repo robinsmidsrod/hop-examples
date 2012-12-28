@@ -1,0 +1,16 @@
+
+
+###
+### concatenate-continuation
+###
+
+## Chapter 8 section 8.1
+
+sub concatenate {
+  my (@p) = @_;
+  return \&nothing if @p == 0;
+  my $p0 = shift @p;
+  return $p0 if @p == 0;
+
+  return concatenate2($p0, concatenate(@p));
+}

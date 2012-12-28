@@ -1,0 +1,19 @@
+
+
+###
+### fib-automemo
+###
+
+## Chapter 3 section 4
+
+use Memoize;
+memoize 'fib';
+
+# Compute the number of pairs of rabbits alive in month n
+sub fib {
+  my ($month) = @_;
+  if ($month < 2) { 1 }
+  else {
+      fib($month-1) + fib($month-2);
+  }
+} 

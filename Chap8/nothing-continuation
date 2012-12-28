@@ -1,0 +1,12 @@
+
+
+###
+### nothing-continuation
+###
+
+## Chapter 8 section 8.1
+
+sub nothing {
+  my ($input, $continuation) = @_;
+  return $continuation->($input);
+}

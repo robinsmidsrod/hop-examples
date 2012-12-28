@@ -1,0 +1,16 @@
+
+
+###
+### RGB_to_CMYK
+###
+
+## Chapter 3 section 
+
+sub RGB_to_CMYK {
+  my ($r, $g, $b) = @_;
+  my ($c, $m, $y) = (255-$r, 255-$g, 255-$b);
+  my $k = $c < $m ? ($c < $y ? $c : $y)
+                  : ($m < $y ? $m : $y);  # Minimum
+  for ($c, $m, $y) { $_ -= $k }
+  [$c, $m, $y, $k];  
+}     

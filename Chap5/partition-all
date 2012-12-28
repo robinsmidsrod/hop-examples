@@ -1,0 +1,18 @@
+
+
+###
+### partition-all
+###
+
+## Chapter 5 section 1.1
+
+sub partition {
+  my ($target, $treasures) = @_;
+  return [] if $target == 0;
+  return () if $target < 0 || @$treasures == 0;
+
+  my ($first, @rest) = @$treasures;
+  my @solutions = partition($target-$first, \@rest);
+  return ((map {[$first, @$_]} @solutions), 
+          partition($target, \@rest));
+}

@@ -1,0 +1,23 @@
+
+
+###
+### sine
+###
+
+## Chapter 6 section 7
+
+# Approximate sin(x) using the first n terms of the power series
+sub approx_sin {
+  my $n = shift;
+  my $x = shift;
+  my ($denom, $c, $num, $total) = (1, 1, $x, 0);
+  while ($n--) {
+    $total += $num / $denom;
+    $num *= $x*$x * -1;
+    $denom *= ($c+1) * ($c+2);
+    $c += 2;
+  }
+  $total;
+}
+
+1;

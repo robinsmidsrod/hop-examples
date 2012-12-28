@@ -1,0 +1,37 @@
+
+
+###
+### fib8
+###
+
+## Chapter 5 section 4.3.1
+
+sub fib {
+  my $n = shift;
+  my ($s1, $s2, $return);
+  my $BRANCH = 0;
+  my @STACK;
+  while (1) {
+    if ($n < 2) {
+      $return = $n;
+    } else {
+      if ($BRANCH == 0) {
+        push @STACK, [ $BRANCH, 0, $s2, $n ];
+        $n -= 2;
+        next;
+      } elsif ($BRANCH == 1) {
+        push @STACK, [ $BRANCH, $return, $s2, $n ];
+        $n -= 1;
+        $BRANCH = 0;
+        next;
+      } elsif ($BRANCH == 2) {
+        $s2 = $return;
+        $return = $s1 + $s2;
+      }
+    }
+
+    return $return unless @STACK;
+    ($BRANCH, $s1, $s2, $n) = @{pop @STACK};
+    $BRANCH++;
+  }
+}

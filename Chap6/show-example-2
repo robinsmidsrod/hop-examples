@@ -1,0 +1,11 @@
+
+
+###
+### show-example-2
+###
+
+## Chapter 6 section 2.2
+
+use Stream 'upto', 'show';
+
+show(upto(3,6));

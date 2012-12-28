@@ -1,0 +1,20 @@
+
+
+###
+### interleave
+###
+
+## Chapter 7 section 3.1
+
+sub interleave {
+  my ($a, $b) = @_;
+  return sub {
+    my $next = $a->();
+    unless (defined $next) {
+      $a = $b;
+      $next = $a->();
+     }
+    ($a, $b) = ($b, $a);
+    $next;
+  }
+}

@@ -1,0 +1,14 @@
+
+
+###
+### upto
+###
+
+## Chapter 4 section 2.1
+
+sub upto {
+  my ($m, $n) = @_;
+  return sub {
+    return $m <= $n ? $m++ : undef;
+  };
+}

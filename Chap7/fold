@@ -1,0 +1,21 @@
+
+
+###
+### fold
+###
+
+## Chapter 7 section 3
+
+sub fold {
+  my $f = shift;
+  sub {
+    my $x = shift;
+    sub {
+      my $r = $x;
+      while (@_) {
+        $r = $f->($r, shift());
+      }
+      return $r;
+    }
+  }
+}

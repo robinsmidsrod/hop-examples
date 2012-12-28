@@ -1,0 +1,17 @@
+
+
+###
+### combine2
+###
+
+## Chapter 7 section 1
+
+sub combine2 {
+  my $op = shift;
+  return sub {
+    my ($s, $t) = @_;
+    return unless $s && $t;
+    node($op->(head($s), head($t)),
+         promise { combine2($op)->(tail($s), tail($t)) });
+  };        
+}

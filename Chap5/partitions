@@ -1,0 +1,15 @@
+
+
+###
+### partitions
+###
+
+## Chapter 5 section 2
+
+# Compare two partitions for preferred order
+sub partitions {
+  for my $i (0 .. $#$a) {
+    my $cmp = $b->[$i] <=> $a->[$i];
+    return $cmp if $cmp;
+  }
+}

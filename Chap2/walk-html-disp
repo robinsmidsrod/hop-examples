@@ -1,0 +1,22 @@
+
+
+###
+### walk_html_dispatch
+###
+
+## Chapter 2 section 2.1
+
+sub walk_html {
+  my ($html, $textfunc, $elementfunc_table) = @_;
+  return $textfunc->($html) unless ref $html;   # It's a plain string
+
+  my ($item, @results);
+  for $item (@{$html->{_content}}) {
+    push @results, walk_html($item, $textfunc, $elementfunc_table);
+  }
+  my $tag = $html->{_tag};
+  my $elementfunc =  $elementfunc_table->{$tag} 
+               || $elementfunc_table->{_DEFAULT_}
+               || die "No function defined for tag `$tag'";
+  return $elementfunc->($html, @results);
+}

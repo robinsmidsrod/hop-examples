@@ -1,0 +1,24 @@
+
+
+###
+### partition-it
+###
+
+## Chapter 5 section 1.1
+
+sub make_partitioner {
+  my ($n, $treasures) = @_;
+  my @todo = [$n, $treasures, []];
+  sub { 
+    while (@todo) {
+      my $cur = pop @todo;
+      my ($target, $pool, $share) = @$cur;
+      if ($target == 0) { return $share }
+      next if $target < 0 || @$pool == 0;
+      my ($first, @rest) = @$pool;        
+      push @todo, [$target-$first, \@rest, [@$share, $first]],
+                  [$target       , \@rest,   $share         ];
+    }
+    return undef;
+  } # end of anonymous iterator function       
+} # end of make_partitioner

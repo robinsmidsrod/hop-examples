@@ -1,0 +1,25 @@
+
+
+###
+### dir_walk-iterator
+###
+
+## Chapter 4 section 2.2
+
+# iterator version
+sub dir_walk {          
+  my @queue = shift;
+  return Iterator {
+    if (@queue) {
+      my $file = shift @queue;
+      if (-d $file) { 
+        opendir my $dh, $file or next;
+        my @newfiles = grep {$_ ne "." && $_ ne ".."} readdir $dh;
+        push @queue, map "$file/$_", @newfiles;
+      }
+      return $file;
+    } else {
+      return;
+    }
+  };
+}

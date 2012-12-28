@@ -1,0 +1,24 @@
+
+
+###
+### make_partition_partitions
+###
+
+## Chapter 5 section 2
+
+sub make_partition {
+  my $n = shift;
+  my @agenda = [$n];
+  return Iterator {
+    return unless @agenda;
+    my $item = pop @agenda;
+    my ($largest, @rest) = @$item;
+    my $min = $rest[0] || 1;
+    my $max  = int($largest/2);
+    for ($min .. $max) {
+      push @agenda, [$largest-$_, $_, @rest];
+    } 
+    @agenda = sort partitions @agenda;
+    return $item;
+  };
+}
